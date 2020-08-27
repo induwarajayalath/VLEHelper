@@ -124,6 +124,9 @@
 
 <script>
 import db from "../api/firebaseInit";
+import Vue from "vue";
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 
 export default {
   data() {
@@ -172,6 +175,7 @@ export default {
       let data = {
         note: this.toAddNote,
         subjectsId: this.toAddNoteId,
+        id: VueCookies.get("uid"),
       };
       db.collection("notes")
         .add(data)
@@ -211,6 +215,7 @@ export default {
             };
             db.collection("notes")
               .where("subjectsId", "==", doc.id)
+              .where("id", "==", VueCookies.get("uid"))
               .get()
               .then((snapshot) => {
                 snapshot.forEach((doc2) => {

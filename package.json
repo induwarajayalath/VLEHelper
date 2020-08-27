@@ -11,7 +11,11 @@
     "core-js": "^3.6.4",
     "firebase": "^7.14.1",
     "firebase-admin": "^8.10.0",
+    "md5": "^2.3.0",
     "vue": "^2.6.11",
+    "vue-cookies": "^1.7.3",
+    "vue-particles": "^1.0.9",
+    "vue-simple-alert": "^1.1.1",
     "vuetify": "^2.2.23"
   },
   "devDependencies": {
