@@ -4,8 +4,8 @@
       <v-overlay v-if="overlay" class="align-center justify-center">
         <v-progress-circular indeterminate :size="59" :width="12"></v-progress-circular>
       </v-overlay>
-      <v-container fluid fill-height>
-        <v-layout align-center justify-center>
+      <v-container fluid >
+        <v-layout  justify-center>
           <v-card outlined elevation="1" width="700" class="mx-auto">
             <v-flex class="justify-center text-center">
               <div>
@@ -16,7 +16,7 @@
               <v-row class="px-2 pt-3" align="center" justify="center">
                 <v-col sm="6" cols="12">
                   <div class="layout column align-center">
-                    <img class="pl-3" src="../assets/logo2.png" width="250" height="250" alt="sipwin logo"
+                    <img class="pl-3" src="../assets/logo3.png" width="300" height="250" alt="sipwin logo"
                       @click="sendToHome()" />
                   </div>
                 </v-col>
@@ -48,7 +48,7 @@
                     @click:append-outer="pwVisibility = !pwVisibility" @keyup.enter="loginUsingId"
                     class="mb-3"></v-text-field>
 
-                  <v-row class="mt-3" justify="center" align="center" dense>
+                  <v-row class="mt-3 mb-5" justify="center" align="center" dense>
                     <v-col cols="5">
                       <v-btn block style="background-color:#3fc96b; color: white;" @click="newUser = true">New
                         User + </v-btn>
@@ -62,15 +62,16 @@
                 </v-col>
 
                 <v-col v-if="!ifId && !newUser" sm="6" cols="12">
-                  <h1 class="flex mb-1" style="color:#253a7c;">Login</h1>
+                  <h1 class="flex mb-1" style="color:#253a7c;">ආයුබෝවන්</h1>
                   <v-card-text>
                     <v-form>
+                      <v-btn class="mb-4" block style="background-color:#ce3741; color: white;"
+                        v-on:click='ifId = true'>Login using
+                        UserName</v-btn>
                       <v-btn class="mb-3" block style="background-color:#bb873e; color: white;" @click="login">Login
                         using
                         Google</v-btn>
-                      <v-btn class="mb-1" block style="background-color:#ce3741; color: white;"
-                        v-on:click='ifId = true'>Login using
-                        ID</v-btn>
+
                     </v-form>
                   </v-card-text>
                 </v-col>

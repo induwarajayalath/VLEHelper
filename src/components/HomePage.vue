@@ -70,6 +70,9 @@
 import db from "../api/firebaseInit";
 import Vue from "vue";
 import VueCookies from "vue-cookies";
+import VueSimpleAlert from "vue-simple-alert";
+
+Vue.use(VueSimpleAlert, { reverseButtons: true });
 Vue.use(VueCookies);
 
 export default {
@@ -136,7 +139,11 @@ export default {
     },
     copyNoteContent(noteContent) {
       navigator.clipboard.writeText(noteContent).then(() => {
-        alert("Note copied to clipboard!");
+        this.$fire({
+          title: "Copied",
+          type: "success",
+          timer: 1000
+        });
       }).catch(err => {
         console.error("Failed to copy text: ", err);
       });
