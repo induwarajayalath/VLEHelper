@@ -8,7 +8,7 @@
       <v-col>
         <v-dialog v-model="AddNoteBool" max-width="600px">
           <template v-slot:activator="{ on }">
-            <v-btn color="#20639b" dark v-on="on">New Note</v-btn>
+            <v-btn color=#3fc96b dark v-on="on">New Note</v-btn>
           </template>
           <v-card>
             <v-card-title>

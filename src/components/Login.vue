@@ -65,7 +65,7 @@
                   <h1 class="flex mb-1" style="color:#253a7c;">Login</h1>
                   <v-card-text>
                     <v-form>
-                      <v-btn class="mb-1" block style="background-color:#bb873e; color: white;" @click="login">Login
+                      <v-btn class="mb-3" block style="background-color:#bb873e; color: white;" @click="login">Login
                         using
                         Google</v-btn>
                       <v-btn class="mb-1" block style="background-color:#ce3741; color: white;"

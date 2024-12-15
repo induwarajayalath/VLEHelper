@@ -19,7 +19,7 @@
 
         <!-- Title Section -->
         <v-col cols="4" md="4" lg="2">
-          <h1 class="app-title">📝 Sticky Notes</h1>
+          <h1 class="app-title">📝 Note Pal</h1>
         </v-col>
 
         <!-- Welcome Message -->
