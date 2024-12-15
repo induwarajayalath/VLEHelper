@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <v-overlay v-if="overlay" class="align-center justify-center">
-        <v-progress-circular color="primary" indeterminate size="75"></v-progress-circular>
+        <v-progress-circular indeterminate :size="59" :width="12"></v-progress-circular>
       </v-overlay>
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
@@ -21,25 +21,52 @@
                   </div>
                 </v-col>
                 <v-col v-if="newUser">
-                  <input v-model="loginId" placeholder="User ID" type="text" />
-                  <input v-model="userName" placeholder="User Name" type="text" />
-                  <input v-model="loginPw" placeholder="Password" type="password" />
-                  <input v-model="loginPwRepeat" placeholder="Repeat Password" type="password" />
-                  <v-btn class="mb-1" block style="background-color:#3fc96b; color: white;" @click='signUpUsingId'>Sign me
+                  <v-text-field v-model="userName" label="Your Name" outlined dense clearable
+                    class="mt-5"></v-text-field>
+                  <v-text-field v-model="loginId" label="User Name" outlined dense clearable></v-text-field>
+
+                  <v-text-field v-model="loginPw" label="Password" outlined dense clearable
+                    :type="pwVisibility ? 'text' : 'password'"
+                    :append-outer-icon="pwVisibility ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-outer="pwVisibility = !pwVisibility"></v-text-field>
+
+                  <v-text-field v-model="loginPwRepeat" label="Repeat Password" outlined dense clearable
+                    :type="pwVisibility ? 'text' : 'password'"
+                    :append-outer-icon="pwVisibility ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-outer="pwVisibility = !pwVisibility" class="mb-3"></v-text-field>
+
+                  <v-btn class="mb-5" block style="background-color:#3fc96b; color: white;" @click='signUpUsingId'>Sign
+                    me
                     Up</v-btn>
                 </v-col>
                 <v-col v-if="ifId && !newUser">
-                  <input v-model="loginId" placeholder="User ID" type="text" />
-                  <input v-model="loginPw" placeholder="Password" type="password" v-on:keyup.enter="loginUsingId" />
-                  <v-btn class="mb-1" block style="background-color:#ce3741; color: white;" @click='loginUsingId'>Login
-                    using
-                    ID</v-btn>
+                  <v-text-field v-model="loginId" label="User ID" outlined dense clearable></v-text-field>
+
+                  <v-text-field v-model="loginPw" label="Password" outlined dense clearable
+                    :type="pwVisibility ? 'text' : 'password'"
+                    :append-outer-icon="pwVisibility ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-outer="pwVisibility = !pwVisibility" @keyup.enter="loginUsingId"
+                    class="mb-3"></v-text-field>
+
+                  <v-row class="mt-3" justify="center" align="center" dense>
+                    <v-col cols="5">
+                      <v-btn block style="background-color:#3fc96b; color: white;" @click="newUser = true">New
+                        User + </v-btn>
+                    </v-col>
+                    <v-col cols="5">
+                      <v-btn block style="background-color:#ce3741; color: white;" @click="loginUsingId">Login
+                        -></v-btn>
+                    </v-col>
+
+                  </v-row>
                 </v-col>
+
                 <v-col v-if="!ifId && !newUser" sm="6" cols="12">
                   <h1 class="flex mb-1" style="color:#253a7c;">Login</h1>
                   <v-card-text>
                     <v-form>
-                      <v-btn class="mb-1" block style="background-color:#bb873e; color: white;" @click="login">Login using
+                      <v-btn class="mb-1" block style="background-color:#bb873e; color: white;" @click="login">Login
+                        using
                         Google</v-btn>
                       <v-btn class="mb-1" block style="background-color:#ce3741; color: white;"
                         v-on:click='ifId = true'>Login using
@@ -58,7 +85,7 @@
                 <v-container>
                   <v-row class="justify-center">Logging in...</v-row>
                   <v-row class="mt-2 justify-center">
-                    <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+                    <v-progress-circular indeterminate :size="59" :width="12"></v-progress-circular>
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -94,6 +121,7 @@ export default {
     loginPw: "",
     loginPwRepeat: "",
     newUser: false,
+    pwVisibility: false,
     userName: "",
     defaultPicUrl:
       "https://firebasestorage.googleapis.com/v0/b/sipwin-online.appspot.com/o/avatar.png?alt=media&token=ea20826f-214a-46ab-aaed-16d0c510be9c",
@@ -201,7 +229,7 @@ export default {
             // alert(err.message);
             this.errormm = err.message;
             this.showError = true;
-            this.overlay = true;
+            this.overlay = false;
           }
         );
       e.preventDefault();
