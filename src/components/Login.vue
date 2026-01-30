@@ -1,101 +1,95 @@
 <template>
-  <v-app>
-    <v-content>
-      <v-overlay v-if="overlay" class="align-center justify-center">
-        <v-progress-circular indeterminate :size="59" :width="12"></v-progress-circular>
-      </v-overlay>
-      <v-container fluid >
-        <v-layout  justify-center>
-          <v-card outlined elevation="1" width="700" class="mx-auto">
-            <v-flex class="justify-center text-center">
-              <div>
-                <v-alert class="mx-2 mt-2" type="error" dismissible v-model="showError">{{ this.errormm }}</v-alert>
-                <v-alert class="mx-2 mt-2" type="success" dismissible v-model="successBool"
-                  transition="scale-transition">{{ this.successMsg }}</v-alert>
-              </div>
-              <v-row class="px-2 pt-3" align="center" justify="center">
-                <v-col sm="6" cols="12">
-                  <div class="layout column align-center">
-                    <img class="pl-3" src="../assets/logo3.png" width="300" height="250" alt="sipwin logo"
-                      @click="sendToHome()" />
-                  </div>
-                </v-col>
-                <v-col v-if="newUser">
-                  <v-text-field v-model="userName" label="Your Name" outlined dense clearable
-                    class="mt-5"></v-text-field>
-                  <v-text-field v-model="loginId" label="User Name" outlined dense clearable></v-text-field>
+  <div class="login-wrapper">
+    <v-overlay v-if="overlay" class="align-center justify-center" z-index="1000">
+      <v-progress-circular indeterminate size="64" width="6" color="primary"></v-progress-circular>
+    </v-overlay>
 
-                  <v-text-field v-model="loginPw" label="Password" outlined dense clearable
-                    :type="pwVisibility ? 'text' : 'password'"
-                    :append-outer-icon="pwVisibility ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append-outer="pwVisibility = !pwVisibility"></v-text-field>
+    <v-container class="fill-height justify-center px-4" fluid>
+      <v-card class="auth-card" elevation="10">
+        <div class="auth-header">
+          <img src="../assets/icon.png" class="auth-logo" alt="sipwin logo" @click="sendToHome" />
+          <h2 class="auth-title">{{ isLogin ? 'Welcome Back' : 'Create Account' }}</h2>
+          <p class="auth-subtitle">{{ isLogin ? 'Sign in to continue' : 'Join us to get started' }}</p>
+        </div>
 
-                  <v-text-field v-model="loginPwRepeat" label="Repeat Password" outlined dense clearable
-                    :type="pwVisibility ? 'text' : 'password'"
-                    :append-outer-icon="pwVisibility ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append-outer="pwVisibility = !pwVisibility" class="mb-3"></v-text-field>
+        <v-tabs v-model="tab" grow class="auth-tabs" slider-color="primary">
+          <v-tab @click="isLogin = true">Sign In</v-tab>
+          <v-tab @click="isLogin = false">Sign Up</v-tab>
+        </v-tabs>
 
-                  <v-btn class="mb-5" block style="background-color:#3fc96b; color: white;" @click='signUpUsingId'>Sign
-                    me
-                    Up</v-btn>
-                </v-col>
-                <v-col v-if="ifId && !newUser">
-                  <v-text-field v-model="loginId" label="User ID" outlined dense clearable></v-text-field>
+        <v-card-text class="auth-body">
+          <v-alert v-if="showError" type="error" dense dismissible v-model="showError" class="mb-4">
+            {{ errormm }}
+          </v-alert>
+          <v-alert v-if="successBool" type="success" dense dismissible v-model="successBool" class="mb-4">
+            {{ successMsg }}
+          </v-alert>
 
-                  <v-text-field v-model="loginPw" label="Password" outlined dense clearable
-                    :type="pwVisibility ? 'text' : 'password'"
-                    :append-outer-icon="pwVisibility ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append-outer="pwVisibility = !pwVisibility" @keyup.enter="loginUsingId"
-                    class="mb-3"></v-text-field>
+          <v-form @submit.prevent="handleSubmit">
+            <v-text-field
+              v-if="!isLogin"
+              v-model="userName"
+              label="Full Name"
+              prepend-inner-icon="mdi-account-outline"
+              outlined
+              dense
+              class="rounded-lg mb-2"
+            ></v-text-field>
 
-                  <v-row class="mt-3 mb-5" justify="center" align="center" dense>
-                    <v-col cols="5">
-                      <v-btn block style="background-color:#3fc96b; color: white;" @click="newUser = true">New
-                        User + </v-btn>
-                    </v-col>
-                    <v-col cols="5">
-                      <v-btn block style="background-color:#ce3741; color: white;" @click="loginUsingId">Login
-                        -></v-btn>
-                    </v-col>
+            <v-text-field
+              v-model="email"
+              label="Email Address"
+              prepend-inner-icon="mdi-email-outline"
+              outlined
+              dense
+              required
+              class="rounded-lg mb-2"
+            ></v-text-field>
 
-                  </v-row>
-                </v-col>
+            <v-text-field
+              v-model="password"
+              label="Password"
+              prepend-inner-icon="mdi-lock-outline"
+              outlined
+              dense
+              required
+              :type="pwVisibility ? 'text' : 'password'"
+              :append-icon="pwVisibility ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+              @click:append="pwVisibility = !pwVisibility"
+              class="rounded-lg mb-4"
+            ></v-text-field>
 
-                <v-col v-if="!ifId && !newUser" sm="6" cols="12">
-                  <h1 class="flex mb-1" style="color:#253a7c;">ආයුබෝවන්</h1>
-                  <v-card-text>
-                    <v-form>
-                      <v-btn class="mb-4" block style="background-color:#ce3741; color: white;"
-                        v-on:click='ifId = true'>Login using
-                        UserName</v-btn>
-                      <v-btn class="mb-3" block style="background-color:#bb873e; color: white;" @click="login">Login
-                        using
-                        Google</v-btn>
+            <v-btn
+              block
+              large
+              color="primary"
+              type="submit"
+              class="auth-btn rounded-lg mt-2"
+              :loading="overlay"
+              elevation="0"
+            >
+              {{ isLogin ? 'Sign In' : 'Sign Up' }}
+            </v-btn>
 
-                    </v-form>
-                  </v-card-text>
-                </v-col>
-              </v-row>
-            </v-flex>
-          </v-card>
-        </v-layout>
-        <v-row>
-          <v-dialog v-model="dialogFullScreenLoader" persistent width="200">
-            <v-card>
-              <v-card-text>
-                <v-container>
-                  <v-row class="justify-center">Logging in...</v-row>
-                  <v-row class="mt-2 justify-center">
-                    <v-progress-circular indeterminate :size="59" :width="12"></v-progress-circular>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-            </v-card>
-          </v-dialog>
-        </v-row>
-      </v-container>
-    </v-content>
-  </v-app>
+            <div class="divider mt-6 mb-4">
+              <span>OR</span>
+            </div>
+
+            <v-btn
+              block
+              outlined
+              color="grey darken-1"
+              class="google-btn rounded-lg"
+              @click="loginWithGoogle"
+            >
+              <v-icon left>mdi-google</v-icon>
+              Continue with Google
+            </v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -103,158 +97,209 @@ import firebase from "firebase";
 import Vue from "vue";
 import VueCookies from "vue-cookies";
 import VueSimpleAlert from "vue-simple-alert";
+
 Vue.use(VueSimpleAlert);
 Vue.use(VueCookies);
+
 export default {
   data: () => ({
     overlay: false,
-    found: false,
-    loading: false,
     email: "",
     password: "",
+    userName: "",
     showError: false,
     errormm: " ",
     successMsg: "",
     successBool: false,
-    dialogFullScreenLoader: false,
-    ifId: false,
-    loginId: "",
-    loginPw: "",
-    loginPwRepeat: "",
-    newUser: false,
+    tab: 0,
+    isLogin: true,
     pwVisibility: false,
-    userName: "",
-    defaultPicUrl:
-      "https://firebasestorage.googleapis.com/v0/b/sipwin-online.appspot.com/o/avatar.png?alt=media&token=ea20826f-214a-46ab-aaed-16d0c510be9c",
   }),
-  watch: {
-    loader() {
-      const l = this.loader;
-      this[l] = !this[l];
-      setTimeout(() => {
-        this[l] = false;
-      }, 3000);
-      this.loader = null;
-    },
-  },
 
   methods: {
-    signUpUsingId: function (e) {
-      if (this.loginPw != this.loginPwRepeat) {
-        this.errormm = "Password Missmatch !!!";
-        this.showError = true;
+    toggleTab() {
+      this.isLogin = !this.isLogin;
+      this.tab = this.isLogin ? 0 : 1;
+    },
+    handleSubmit() {
+      if (this.isLogin) {
+        this.loginWithEmail();
+      } else {
+        this.signUpWithEmail();
+      }
+    },
+    signUpWithEmail() {
+      if (!this.email || !this.password || !this.userName) {
+        this.setError("Please fill in all fields");
         return;
       }
       this.overlay = true;
-      let userEmail = this.loginId + "@appendemail.com";
-      firebase.auth().createUserWithEmailAndPassword(userEmail, this.loginPw)
+      firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
         .then((userCredential) => {
-          var user = userCredential.user;
+          const user = userCredential.user;
           user.updateProfile({
             displayName: this.userName,
           }).then(() => {
-            // Signed in 
-            console.log(user);
-            VueCookies.config("1y");
-            this.showError = false;
-            this.successBool = true;
-            this.successMsg = "Welcome Back !";
-            let uid = firebase.auth().currentUser.uid;
-            VueCookies.set("uid", uid);
-            let name = firebase.auth().currentUser.displayName;
-            VueCookies.set("uname", name);
-            window.location.reload();
+            this.handleAuthSuccess("Account created successfully!");
           }).catch((error) => {
-            this.errormm = error.message;
-            this.showError = true;
+            this.setError(error.message);
           });
         })
         .catch((error) => {
-          this.overlay = false;
-          this.errormm = error.message;
-          this.showError = true;
+          this.setError(error.message);
         });
-      e.preventDefault();
     },
-    loginUsingId: function (e) {
+    loginWithEmail() {
       this.overlay = true;
-      let userEmail = this.loginId + "@appendemail.com";
-      firebase.auth().signInWithEmailAndPassword(userEmail, this.loginPw)
-        .then((userCredential) => {
-          // Signed in 
-          var user = userCredential.user;
-          console.log(user);
-          VueCookies.config("1y");
-          this.showError = false;
-          this.successBool = true;
-          this.successMsg = "Welcome Back !";
-          let uid = firebase.auth().currentUser.uid;
-          VueCookies.set("uid", uid);
-          let name = firebase.auth().currentUser.displayName;
-          VueCookies.set("uname", name);
-          window.location.reload();
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+        .then(() => {
+          this.handleAuthSuccess("Welcome Back!");
         })
         .catch((error) => {
-          this.overlay = false;
-          console.log(error.code);
-          if (error.code == "auth/user-not-found") {
-            this.loginPw = '';
-            this.newUser = true;
-          }
-          this.errormm = error.message;
-          this.showError = true;
+          this.setError(error.message);
         });
-
-      e.preventDefault();
     },
-    login: function (e) {
-      let provider = new firebase.auth.GoogleAuthProvider();
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then(
-          (user) => {
-            this.overlay = true;
-            console.log(user);
-            VueCookies.config("1y");
-            this.showError = false;
-            this.successBool = true;
-            this.successMsg = "Welcome Back !";
-            let uid = firebase.auth().currentUser.uid;
-            VueCookies.set("uid", uid);
-            let name = firebase.auth().currentUser.displayName;
-            VueCookies.set("uname", name);
-            window.location.reload();
-          },
-          (err) => {
-            // alert(err.message);
-            this.errormm = err.message;
-            this.showError = true;
-            this.overlay = false;
-          }
-        );
-      e.preventDefault();
+    loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then(() => {
+          this.handleAuthSuccess("Welcome Back!");
+        })
+        .catch((error) => {
+          this.setError(error.message);
+        });
+    },
+    handleAuthSuccess(msg) {
+      this.showError = false;
+      this.successBool = true;
+      this.successMsg = msg;
+      
+      const user = firebase.auth().currentUser;
+      VueCookies.config("1y");
+      VueCookies.set("uid", user.uid);
+      if (user.displayName) {
+        VueCookies.set("uname", user.displayName);
+      }
+      
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    },
+    setError(msg) {
+      this.overlay = false;
+      this.errormm = msg;
+      this.showError = true;
     },
     sendToHome() {
-      this.ifId = false;
-      this.newUser = false;
-      //this.$router.push("/");
+      // Logic if logo is clicked
     },
   },
 };
 </script>
-<style scoped lang="css">
-#login {
-  height: 50%;
+
+<style scoped>
+.login-wrapper {
+  background-color: #f7f8f2;
+  min-height: calc(100vh - 100px); /* Adjust for App Bar height */
   width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: "";
-  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.centered-input input {
+.auth-card {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 20px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: white !important;
+}
+
+.auth-header {
+  padding: 40px 24px 20px;
   text-align: center;
+}
+
+.auth-logo {
+  width: 140px;
+  height: auto;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.auth-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.auth-subtitle {
+  font-size: 15px;
+  color: #64748b;
+  margin-bottom: 0;
+}
+
+.auth-tabs {
+  margin-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.auth-body {
+  padding: 24px 32px !important;
+}
+
+.auth-btn {
+  text-transform: none;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  height: 48px !important;
+  background-color: #5680e9 !important; /* Matches App Bar color */
+  color: white !important;
+}
+
+.google-btn {
+  text-transform: none;
+  font-weight: 600;
+  height: 48px !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.divider span {
+  padding: 0 12px;
+}
+
+/* Vuetify specific overrides */
+.rounded-lg >>> .v-input__control > .v-input__slot {
+  border-radius: 12px !important;
+  background-color: #f8fafc !important;
+}
+
+.rounded-lg >>> fieldset {
+  border-color: #e2e8f0 !important;
+}
+
+.rounded-lg.v-input--is-focused >>> fieldset {
+  border-color: #5680e9 !important;
+  border-width: 2px;
 }
 </style>
